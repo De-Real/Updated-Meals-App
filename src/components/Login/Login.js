@@ -14,13 +14,27 @@ const validateName = (value) => {
 };
 
 const validatePhoneNumber = (value) => {
-  if (value.includes("0") && value.length > 10 && value.length < 20) {
-    return { isValid: true };
+  let formatValue = value.replace(/\s/g, ""); //380638883791 or 0638883791 or +380638883791
+  formatValue = formatValue.split("-").join("");
+  formatValue = formatValue.replace("+", "");
+  if (formatValue.slice(0, 3).includes("38")) {
+    formatValue = formatValue.replace("38", "");
   }
-  return {
+  formatValue = formatValue.replace("(", "");
+  formatValue = formatValue.replace(")", "");
+
+  console.log(formatValue);
+
+  const invalidObj = {
     isValid: false,
     text: "Phone number has to be like 38(063) 888 37 91 or similar to this.",
   };
+
+  if (!isNaN(+formatValue) && formatValue.length === 10) {
+    return { isValid: true };
+  }
+
+  return invalidObj;
 };
 
 const validateEmail = (email) => {
