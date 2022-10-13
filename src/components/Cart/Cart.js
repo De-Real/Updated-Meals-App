@@ -8,6 +8,9 @@ import LoginContext from "../../store/login-context";
 import AltButton from "../UI/Buttons/AltButton";
 import Button from "../UI/Buttons/Button";
 import OrderDone from "./OrderDone";
+import useFetch from "../../hooks/use-fetch";
+import RequestError from "../RequestStatuses/RequestError/RequestError";
+import LoadingRequest from "../RequestStatuses/LoadingRequest/LoadingRequest";
 
 const Cart = (props) => {
   const cartCtx = useContext(CartContext);
@@ -16,30 +19,31 @@ const Cart = (props) => {
   const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
   const hasItems = cartCtx.items.length > 0;
 
-  const [hasError, setHasError] = useState(false);
+  const { isLoading, error, fetchData: postOrder } = useFetch();
 
-  const postOrder = async (body = null) => {
-    if (!body) return;
-    const response = fetch(
-      "https://react-meals-d80c0-default-rtdb.europe-west1.firebasedatabase.app/orders.json",
-      {
-        body: JSON.stringify(body),
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      }
-    );
+  //   const postOrder = async (body = null) => {
+  //     if (!body) return;
+  //     const response = await fetch(
+  //       "https://react-meals-d80c0-default-rtdb.europe-west1.firebasedatabase.app/orders.json",
+  //       {
+  //         body: JSON.stringify(body),
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         method: "POST",
+  //       }
+  //     );
 
-    if (!response.ok) {
-      setHasError(true);
-      console.log("error");
-      return;
-    }
+  //     if (!response.ok) {
+  //       console.log(response);
+  //       setHasError(true);
+  //       console.log("error");
+  //       return;
+  //     }
 
-    const result = await response.json();
-    console.log("OK", result);
-  };
+  //     const result = await response.json();
+  //     console.log("OK", result);
+  //   };
 
   const onOrderHandler = () => {
     const {
@@ -63,7 +67,17 @@ const Cart = (props) => {
         data: new Date().toLocaleString(),
       };
 
-      postOrder(data);
+      postOrder(
+        {
+          url: "https://react-meals-d80c0-default-rtdb.europe-west1.firebasedatabase.app/orders.json",
+          body: data,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+        },
+        (res) => console.log(res)
+      );
 
       props.changeOrderStatus(true);
       cartCtx.clearItems();
@@ -121,9 +135,13 @@ const Cart = (props) => {
     </ul>
   );
 
+  const cartConditions =
+    !props.wasOrdered && !props.isOrdering && !isLoading && !error;
+  const madeOrderConditions = props.wasOrdered && !isLoading && !error;
   return (
     <Modal onClose={props.onClose}>
-      {!props.wasOrdered && !props.isOrdering && (
+      {isLoading && !error && <LoadingRequest />}
+      {cartConditions && (
         <>
           {cartItems}
           <div className={classes.total}>
@@ -136,8 +154,7 @@ const Cart = (props) => {
           </div>
         </>
       )}
-
-      {props.wasOrdered && (
+      {madeOrderConditions && (
         <>
           <OrderDone name={loginCtx.name} email={loginCtx.email} />
           <div className={classes.actions}>
@@ -146,6 +163,7 @@ const Cart = (props) => {
           </div>
         </>
       )}
+      {error && !isLoading && <RequestError error={error} />}
     </Modal>
   );
 };

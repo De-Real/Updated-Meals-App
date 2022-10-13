@@ -3,6 +3,9 @@ import MealItem from "./MealItem/MealItem";
 import classes from "./AvailableMeals.module.css";
 import { useEffect, useState } from "react";
 import MealsFilter from "./MealsFilter";
+import useFetch from "../../hooks/use-fetch";
+import LoadingRequest from "../RequestStatuses/LoadingRequest/LoadingRequest";
+import RequestError from "../RequestStatuses/RequestError/RequestError";
 
 // const DUMMY_MEALS = [
 //   {
@@ -160,21 +163,22 @@ const AvailableMeals = () => {
   const [changedMeals, setChangedMeals] = useState(meals);
   const [mealsFilter, setMealsFilter] = useState("meat");
 
-  const getMeals = async () => {
-    const response = await fetch(
-      "https://react-meals-d80c0-default-rtdb.europe-west1.firebasedatabase.app/meals.json"
-    );
-    if (response.ok) {
-      const results = await response.json();
-      const [key, value] = Object.entries(results)[0];
-      setMeals(value);
-    } else {
-      console.log("everything is bad");
-    }
+  const { error, isLoading, fetchData } = useFetch();
+
+  const manageMeals = (data) => {
+    console.log("yes231321321312");
+    setMeals(Object.values(data)[0]);
   };
 
   useEffect(() => {
-    getMeals();
+    console.log("Fetching");
+    fetchData(
+      {
+        url: "https://react-meals-d80c0-default-rtdb.europe-west1.firebasedatabase.app/meals.json",
+      },
+      manageMeals
+    );
+    //  getMeals();
   }, []);
 
   const onMealsFilterChange = (event) => {
@@ -203,7 +207,9 @@ const AvailableMeals = () => {
     <section className={classes.meals}>
       <MealsFilter value={mealsFilter} changeValue={onMealsFilterChange} />
       <Card>
-        <ul>{mealsList}</ul>
+        {error && !isLoading && <RequestError />}
+        {isLoading && !error && <LoadingRequest />}
+        {!error && !isLoading && <ul>{mealsList}</ul>}
       </Card>
     </section>
   );
