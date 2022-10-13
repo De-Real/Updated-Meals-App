@@ -1,0 +1,26 @@
+.button {
+	cursor: pointer;
+	font: inherit;
+	border: none;
+	background-color: rgb(133, 133, 248);
+	color: rgba(0, 0, 0, 0.8);
+	padding: 0.75rem 3rem;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	border-radius: 25px;
+	font-weight: bold;
+	margin-left: 10px;
+ }
+ 
+ .button:hover,
+ .button:active {
+	background-color: rgb(164, 164, 250);
+ }
+
+ .icon {
+	width: 1.35rem;
+	height: 1.35rem;
+	margin-right: 0.5rem;
+ }
+ 

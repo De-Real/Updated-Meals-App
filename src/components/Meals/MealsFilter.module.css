@@ -1,0 +1,26 @@
+.meals-filter{
+	padding: 10px;
+	display: flex;
+	align-items: center;
+}
+
+.meals-filter h2{
+	font-size: 36px;
+	flex: 0 0 50%;
+}
+
+.meals-filter__filter{
+	padding: 0 10px;
+	display: flex;
+	align-items: center;
+	font-size: 24px;
+}
+
+.meals-filter__filter select{
+	margin-left: 10px;
+	font-size: 20px;
+	background-color: transparent;
+	border: 1px solid black;
+	padding: 3px 5px;
+	border-radius: 3px;
+}
