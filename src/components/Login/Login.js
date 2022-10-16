@@ -67,6 +67,9 @@ const validateAdress = (value) => {
 };
 
 const Login = (props) => {
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
+
   const {
     value: nameValue,
     valueError: nameError,
@@ -102,9 +105,6 @@ const Login = (props) => {
     onValueChangeHandler: onAdressChangeHandler,
     onValueReset: onAdressReset,
   } = useInput(validateAdress);
-
-  const [isFormValid, setIsFormValid] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
 
   const login = useContext(LoginContext);
 

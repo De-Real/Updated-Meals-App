@@ -20,6 +20,7 @@ function App() {
   const manageLogModalHandler = () => {
     if (isOrdering) {
       manageCartHandler();
+      setIsOrdering(false);
     }
     setLogModalIsShown((curState) => !curState);
   };
